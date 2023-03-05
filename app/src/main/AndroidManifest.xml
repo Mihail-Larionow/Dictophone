@@ -16,7 +16,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Voice_recorder"
-        tools:targetApi="33">
+        tools:targetApi="33"
+        android:name=".VKApplication">
         <activity
             android:name=".MainActivity"
             android:exported="true">

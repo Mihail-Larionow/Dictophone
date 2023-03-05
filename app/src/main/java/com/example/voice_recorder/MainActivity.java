@@ -1,5 +1,6 @@
 package com.example.voice_recorder;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -7,20 +8,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.ContextWrapper;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.voice_recorder.adapters.RecordCard;
 import com.example.voice_recorder.adapters.RecyclerAdapter;
 import com.vk.api.sdk.VK;
+import com.vk.api.sdk.VKApiCallback;
+import com.vk.api.sdk.auth.VKAccessToken;
+import com.vk.api.sdk.auth.VKAuthCallback;
 import com.vk.api.sdk.auth.VKScope;
 import com.vk.api.sdk.utils.VKUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,13 +42,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.application_activity);
+
         vkDocuments = new ArrayList<VKScope>();
         vkDocuments.add(VKScope.DOCS);
+        VK.login(this, vkDocuments);
 
-        //VK.login(this, vkDocuments);
     }
-
 
     //Wait until permissions will be granted
     @Override
@@ -50,6 +58,27 @@ public class MainActivity extends AppCompatActivity {
             init();
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        VKAuthCallback callback = new VKAuthCallback(){
+            @Override
+            public void onLoginFailed(int i) {
+                Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG);
+            }
+
+            @Override
+            public void onLogin(@NonNull VKAccessToken vkAccessToken) {
+                Toast.makeText(getApplicationContext(), "Okay", Toast.LENGTH_LONG);
+            }
+        };
+
+        if(data == null || !VK.onActivityResult(requestCode, resultCode, data, callback))
+            super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+
 
     //Application initialisation
     private void init(){
@@ -125,6 +154,13 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         else return true;
+    }
+
+    private boolean allPermissionsGranted(){
+        if(!getRecordPermission()) return false;
+        if(!getWritePermission()) return false;
+        if(!getReadPermission()) return false;
+        return true;
     }
 
 }

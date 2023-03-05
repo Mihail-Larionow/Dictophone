@@ -10,7 +10,7 @@ import java.util.Date;
 public class AudioRecord {
 
     final String filePath;
-    final MediaPlayer player;
+    private MediaPlayer player;
     public boolean isPlaying;
 
     public AudioRecord(String filePath){
@@ -22,22 +22,23 @@ public class AudioRecord {
     //Play audio
     public void play(){
         try {
+            player.reset();
             player.setDataSource(filePath);
             player.prepare();
             player.start();
-
-            Log.d("PLAY", "STARTED"); //Debug
         }catch (Exception e){
-            Log.d("PLAY", "ERROR"); //Debug
+            Log.d("PLAY", "ERROR");
         }
     }
 
-    public void pause(){
-        player.pause();
-    }
-    //Delete audio
-    public void delete(){
-
+    //Stop audio
+    public void stop(){
+        try {
+            player.stop();
+            Log.d("STOP", "OKAY");
+        }catch (Exception e){
+            Log.d("STOP", "ERROR");
+        }
     }
 
     public int getDuration(){

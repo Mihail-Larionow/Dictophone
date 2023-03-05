@@ -58,7 +58,7 @@ public class RecordCard {
                 else{
                     playButton.setImageDrawable(playing);
                     audioRecord.isPlaying = false;
-                    audioRecord.pause();
+                    audioRecord.stop();
                 }
             }
         });

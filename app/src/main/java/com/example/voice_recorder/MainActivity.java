@@ -13,22 +13,17 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.example.voice_recorder.adapters.RecordCard;
 import com.example.voice_recorder.adapters.RecyclerAdapter;
 import com.vk.api.sdk.VK;
-import com.vk.api.sdk.VKApiCallback;
 import com.vk.api.sdk.auth.VKAccessToken;
 import com.vk.api.sdk.auth.VKAuthCallback;
 import com.vk.api.sdk.auth.VKScope;
-import com.vk.api.sdk.utils.VKUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,23 +33,23 @@ public class MainActivity extends AppCompatActivity {
     final int READ_PERMISSION = 300;
     private List<RecordCard> recordCards;
     private ArrayList<VKScope> vkDocuments;
+    private ImageView recordButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.application_activity);
+        setContentView(R.layout.activity_main);
 
         vkDocuments = new ArrayList<VKScope>();
         vkDocuments.add(VKScope.DOCS);
         VK.login(this, vkDocuments);
-
     }
 
     //Wait until permissions will be granted
     @Override
     protected void onResume() {
         super.onResume();
-        if(hasMicrophone() && getRecordPermission() && getWritePermission() && getReadPermission()){
+        if(hasMicrophone() && allPermissionsGranted()){
             init();
         }
     }
@@ -77,45 +72,31 @@ public class MainActivity extends AppCompatActivity {
             super.onActivityResult(requestCode, resultCode, data);
     }
 
-
-
-
-    //Application initialisation
+    //Initialization
     private void init(){
         recordCards = new ArrayList<>();
 
         File directory = getDirectory();
         File[] files = directory.listFiles();
 
-        RecyclerView recycler = (RecyclerView) findViewById(R.id.recyclerView);
         ImageView recordButton = (ImageView) findViewById(R.id.recordButton);
+        RecyclerView recycler = (RecyclerView) findViewById(R.id.recyclerView);
 
-        loadData(files);
+
         AudioRecorder audioRecorder = new AudioRecorder(
-                getResources(), directory.getPath(), recordCards.size()
+                getResources(), directory.getPath(), recordCards
         );
-        audioRecorder.setRecordButton(recordButton);
-        recycler.setAdapter(new RecyclerAdapter(recordCards));
+        audioRecorder.loadData(files, recordCards);
 
-        Log.d("Files", "Directory:" + directory.getPath());
+        RecyclerAdapter adapter = new RecyclerAdapter(recordCards);
+        recycler.setAdapter(adapter);
+        audioRecorder.setRecordButton(recordButton, recordCards, adapter);
     }
 
     //Get directory with files
     private File getDirectory(){
         ContextWrapper contextWrapper = new ContextWrapper(getApplicationContext());
         return contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-    }
-
-    //Load files into array
-    private void loadData(File[] files){
-        if(files != null)
-            for (File file : files) {
-                recordCards.add(new RecordCard(getResources(), file.getPath()));
-                Log.d("Files", "FileName:" + file.getName()); //Debug
-            }
-        else {
-            Log.d("Files", "No"); //Debug
-        }
     }
 
     //Check microphone is unable

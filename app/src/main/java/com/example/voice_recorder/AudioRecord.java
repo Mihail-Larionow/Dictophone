@@ -2,16 +2,19 @@ package com.example.voice_recorder;
 
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
+import android.os.CountDownTimer;
 import android.util.Log;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class AudioRecord {
 
     final String filePath;
-    private MediaPlayer player;
+    final MediaPlayer player;
     public boolean isPlaying;
+    final int DAY = 86400000;
 
     public AudioRecord(String filePath){
         this.filePath = filePath;
@@ -31,11 +34,10 @@ public class AudioRecord {
         }
     }
 
-    //Stop audio
+    //Stop playing audio
     public void stop(){
         try {
             player.stop();
-            Log.d("STOP", "OKAY");
         }catch (Exception e){
             Log.d("STOP", "ERROR");
         }
@@ -49,10 +51,18 @@ public class AudioRecord {
         );
     }
 
+    public int getCurrentDuration(){
+        return player.getCurrentPosition();
+    }
+
     public String getDate(){
         File file = new File(filePath);
         Date date = new Date(file.lastModified());
-        return date.toString();
+        if(date.getTime() - new Date().getTime() < DAY)
+            return "Сегодня " + new SimpleDateFormat("HH:mm").format(date);
+        else if (date.getTime() - new Date().getTime() < 2*DAY)
+            return "Вчера " + new SimpleDateFormat("HH:mm").format(date);
+        return new SimpleDateFormat("dd.MM HH:mm").format(date);
     }
 
 }

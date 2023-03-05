@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.voice_recorder.R;
+import com.example.voice_recorder.RecordCard;
 
 import java.util.List;
 
@@ -60,6 +61,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             dateText.setText(recordCard.getDate());
             durationText.setText(recordCard.getDuration());
             recordCard.setPlayButton(playButton);
+            recordCard.setDurationTextView(durationText);
+            recordCard.setProgressBar(durationBar);
         }
     }
 

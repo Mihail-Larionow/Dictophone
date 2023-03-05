@@ -75,9 +75,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recycler = (RecyclerView) findViewById(R.id.recyclerView);
 
 
-        AudioRecorder audioRecorder = new AudioRecorder(
-                getResources(), directory.getPath(), recordCards
-        );
+        AudioRecorder audioRecorder = new AudioRecorder(getResources(), directory.getPath());
         audioRecorder.loadData(files, recordCards);
 
         RecyclerAdapter adapter = new RecyclerAdapter(recordCards);

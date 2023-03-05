@@ -21,10 +21,9 @@ public class AudioRecorder {
     final Resources res;
     int count;
 
-    public AudioRecorder(Resources res, String directoryPath, List<RecordCard> recordCards){
+    public AudioRecorder(Resources res, String directoryPath){
         this.res = res;
         this.directoryPath = directoryPath;
-        count = recordCards.size();
         isRecording = false;
         microphone = ResourcesCompat.getDrawable(res, R.drawable.microphone, null);
         recording = ResourcesCompat.getDrawable(res, R.drawable.recording, null);
@@ -75,11 +74,8 @@ public class AudioRecorder {
         if(files != null)
             for (File file : files) {
                 recordCards.add(new RecordCard(res, file.getPath()));
-                Log.d("Files", "FileName:" + file.getName()); //Debug
             }
-        else {
-            Log.d("Files", "No"); //Debug
-        }
+        count = recordCards.size();
     }
 
     private String createFilePath(){

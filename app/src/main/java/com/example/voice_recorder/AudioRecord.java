@@ -1,55 +1,57 @@
 package com.example.voice_recorder;
 
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
-import android.widget.ImageView;
+import android.util.Log;
 
-import java.io.IOException;
+import java.io.File;
+import java.util.Date;
 
 public class AudioRecord {
 
-    private int duration;
-    private String name, date;
-    private String filePath;
-    private ImageView button;
+    final String filePath;
+    final MediaPlayer player;
+    public boolean isPlaying;
 
     public AudioRecord(String filePath){
-        name = "Без названия";
-        duration = 5;
-        date = "today";
         this.filePath = filePath;
+        isPlaying = false;
+        player = new MediaPlayer();
     }
 
     //Play audio
     public void play(){
         try {
-            MediaPlayer player = new MediaPlayer();
             player.setDataSource(filePath);
             player.prepare();
             player.start();
-        }catch (IOException e){
 
+            Log.d("PLAY", "STARTED"); //Debug
+        }catch (Exception e){
+            Log.d("PLAY", "ERROR"); //Debug
         }
     }
 
+    public void pause(){
+        player.pause();
+    }
     //Delete audio
     public void delete(){
 
     }
 
-    public String getName(){
-        return name;
+    public int getDuration(){
+        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+        mediaMetadataRetriever.setDataSource(filePath);
+        return Integer.parseInt(
+                mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+        );
     }
 
     public String getDate(){
-        return date;
+        File file = new File(filePath);
+        Date date = new Date(file.lastModified());
+        return date.toString();
     }
 
-    public int getDuration(){
-        return duration;
-    }
-
-    //Add new audio to collection
-    private void add(){
-
-    }
 }

@@ -10,17 +10,16 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.voice_recorder.AudioRecord;
 import com.example.voice_recorder.R;
 
 import java.util.List;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
-    private List<AudioRecord> audioRecords;
+    private List<RecordCard> recordCards;
 
-    public RecyclerAdapter(List<AudioRecord> audioRecords){
-        this.audioRecords = audioRecords;
+    public RecyclerAdapter(List<RecordCard> recordCards){
+        this.recordCards = recordCards;
     }
 
     @NonNull
@@ -33,19 +32,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerAdapter.ViewHolder holder, int position) {
-        holder.setData(audioRecords.get(position));
+        holder.setData(recordCards.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return audioRecords.size();
+        return recordCards.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView nameText, dateText, durationText;
-        private ImageView playButton;
-        private ProgressBar durationBar;
+        final TextView nameText, dateText, durationText;
+        final ImageView playButton;
+        final ProgressBar durationBar;
 
         public ViewHolder(View view) {
             super(view);
@@ -56,10 +55,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             durationBar = (ProgressBar) view.findViewById(R.id.durationBar);
         }
 
-        public void setData(AudioRecord audioRecord){
-            nameText.setText(audioRecord.getName());
-            dateText.setText(audioRecord.getDate());
-            durationText.setText(audioRecord.getDate());
+        public void setData(RecordCard recordCard){
+            nameText.setText(recordCard.getName());
+            dateText.setText(recordCard.getDate());
+            durationText.setText(recordCard.getDuration());
+            recordCard.setPlayButton(playButton);
         }
     }
 

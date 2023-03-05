@@ -3,75 +3,75 @@ package com.example.voice_recorder;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.media.MediaRecorder;
-import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import androidx.core.content.res.ResourcesCompat;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
 
 public class AudioRecorder {
 
     private MediaRecorder recorder;
-    private String audioFilePath;
-    private ImageView recordButton;
-    private Drawable microphone, recording;
+    final String directoryPath;
+    final Drawable microphone, recording;
     private boolean isRecording;
-    public List<AudioRecord> audioRecords;
+    int count;
 
-    public AudioRecorder(Resources res, ImageView recordButton){
+    public AudioRecorder(Resources res, String directoryPath, int count){
         recorder = new MediaRecorder();
-        this.recordButton = recordButton;
-        buttonClickListener();
         isRecording = false;
-        audioRecords = new ArrayList<>();
 
         microphone = ResourcesCompat.getDrawable(res, R.drawable.microphone, null);
         recording = ResourcesCompat.getDrawable(res, R.drawable.recording, null);
-        recordButton.setImageDrawable(microphone);
 
-        audioFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "test.3gp";
-        //recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        //recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        //recorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-        //recorder.setOutputFile(audioFilePath);
+        this.directoryPath = directoryPath;
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
-        audioRecords.add(new AudioRecord(audioFilePath));
-        audioRecords.add(new AudioRecord(audioFilePath));
+        this.count = count;
     }
 
     public void startRecording(){
         try{
+            recorder.setOutputFile(createFilePath());
             recorder.prepare();
             recorder.start();
-        }catch (IllegalStateException e){
-
-        }catch (IOException e){
-
+            Log.d("RECORD", "STARTED"); //Debug
+        }catch (Exception e) {
+            Log.d("RECORD", "ERROR"); //Debug
         }
     }
 
     public void stopRecording(){
-        //recorder.stop();
-        //recorder.release();
-        //recorder = null;
-        audioRecords.add(new AudioRecord( audioFilePath));
+        try {
+            recorder.stop();
+            recorder.release();
+            recorder = null;
+            Log.d("RECORD", "STOPPED"); //Debug
+        }catch (Exception e){
+            Log.d("RECORD", "ERROR"); //Debug
+        }
     }
 
-    private void buttonClickListener(){
+    private String createFilePath(){
+        count++;
+        File file = new File(directoryPath, "record" + (count) + ".mp3");
+        return file.getPath();
+    }
+    public void setRecordButton(ImageView recordButton){
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!isRecording){
-                    recordButton.setImageDrawable(microphone);
+                    recordButton.setImageDrawable(recording);
                     isRecording = true;
                     startRecording();
                 }
                 else{
-                    recordButton.setImageDrawable(recording);
+                    recordButton.setImageDrawable(microphone);
                     isRecording = false;
                     stopRecording();
                 }

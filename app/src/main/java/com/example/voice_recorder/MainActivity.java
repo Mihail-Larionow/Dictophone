@@ -1,46 +1,38 @@
 package com.example.voice_recorder;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.Manifest;
-import android.content.ContextWrapper;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
-import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.example.voice_recorder.adapters.RecyclerAdapter;
-import com.vk.api.sdk.VK;
-import com.vk.api.sdk.auth.VKAccessToken;
-import com.vk.api.sdk.auth.VKAuthCallback;
-import com.vk.api.sdk.auth.VKScope;
-
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
+import android.Manifest;
+import android.os.Bundle;
+import com.vk.api.sdk.VK;
+import java.util.ArrayList;
+import android.widget.Toast;
+import android.os.Environment;
+import android.content.Intent;
+import android.widget.ImageView;
+import com.vk.api.sdk.auth.VKScope;
+import androidx.annotation.NonNull;
+import android.content.ContextWrapper;
+import androidx.core.app.ActivityCompat;
+import com.vk.api.sdk.auth.VKAccessToken;
+import android.content.pm.PackageManager;
+import com.vk.api.sdk.auth.VKAuthCallback;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.voice_recorder.adapters.RecyclerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
     final int MICROPHONE_PERMISSION = 100;
     final int WRITE_PERMISSION = 200;
     final int READ_PERMISSION = 300;
-    private List<RecordCard> recordCards;
-    private ArrayList<VKScope> vkDocuments;
-    private ImageView recordButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        vkDocuments = new ArrayList<VKScope>();
+        ArrayList<VKScope> vkDocuments = new ArrayList<>();
         vkDocuments.add(VKScope.DOCS);
         VK.login(this, vkDocuments);
     }
@@ -59,12 +51,12 @@ public class MainActivity extends AppCompatActivity {
         VKAuthCallback callback = new VKAuthCallback(){
             @Override
             public void onLoginFailed(int i) {
-                Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG);
+                Toast.makeText(getApplicationContext(), "Authorisation failed", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onLogin(@NonNull VKAccessToken vkAccessToken) {
-                Toast.makeText(getApplicationContext(), "Okay", Toast.LENGTH_LONG);
+
             }
         };
 
@@ -74,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Initialization
     private void init(){
-        recordCards = new ArrayList<>();
+        List<RecordCard> recordCards = new ArrayList<>();
 
         File directory = getDirectory();
         File[] files = directory.listFiles();
@@ -140,8 +132,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean allPermissionsGranted(){
         if(!getRecordPermission()) return false;
         if(!getWritePermission()) return false;
-        if(!getReadPermission()) return false;
-        return true;
+        return getReadPermission();
     }
 
 }

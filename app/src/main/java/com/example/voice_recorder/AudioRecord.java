@@ -1,20 +1,18 @@
 package com.example.voice_recorder;
 
-import android.media.MediaMetadataRetriever;
-import android.media.MediaPlayer;
-import android.os.CountDownTimer;
-import android.util.Log;
-
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import android.util.Log;
+import android.media.MediaPlayer;
+import java.text.SimpleDateFormat;
+import android.media.MediaMetadataRetriever;
 
 public class AudioRecord {
 
-    final String filePath;
     final MediaPlayer player;
     public boolean isPlaying;
     final int DAY = 86400000;
+    final String filePath;
 
     public AudioRecord(String filePath){
         this.filePath = filePath;
@@ -22,7 +20,6 @@ public class AudioRecord {
         player = new MediaPlayer();
     }
 
-    //Play audio
     public void play(){
         try {
             player.reset();
@@ -34,13 +31,22 @@ public class AudioRecord {
         }
     }
 
-    //Stop playing audio
     public void stop(){
         try {
             player.stop();
         }catch (Exception e){
             Log.d("STOP", "ERROR");
         }
+    }
+
+    public String getDate(){
+        File file = new File(filePath);
+        Date date = new Date(file.lastModified());
+        if(date.getTime() - new Date().getTime() < DAY)
+            return "Сегодня " + new SimpleDateFormat("HH:mm").format(date);
+        else if (date.getTime() - new Date().getTime() < 2*DAY)
+            return "Вчера " + new SimpleDateFormat("HH:mm").format(date);
+        return new SimpleDateFormat("dd.MM HH:mm").format(date);
     }
 
     public int getDuration(){
@@ -53,16 +59,6 @@ public class AudioRecord {
 
     public int getCurrentDuration(){
         return player.getCurrentPosition();
-    }
-
-    public String getDate(){
-        File file = new File(filePath);
-        Date date = new Date(file.lastModified());
-        if(date.getTime() - new Date().getTime() < DAY)
-            return "Сегодня " + new SimpleDateFormat("HH:mm").format(date);
-        else if (date.getTime() - new Date().getTime() < 2*DAY)
-            return "Вчера " + new SimpleDateFormat("HH:mm").format(date);
-        return new SimpleDateFormat("dd.MM HH:mm").format(date);
     }
 
 }

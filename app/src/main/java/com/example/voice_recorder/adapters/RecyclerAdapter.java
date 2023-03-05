@@ -1,23 +1,20 @@
 package com.example.voice_recorder.adapters;
 
-import android.view.LayoutInflater;
+import java.util.List;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
-
+import android.view.LayoutInflater;
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.voice_recorder.R;
 import com.example.voice_recorder.RecordCard;
-
-import java.util.List;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
-    private List<RecordCard> recordCards;
+    final List<RecordCard> recordCards;
 
     public RecyclerAdapter(List<RecordCard> recordCards){
         this.recordCards = recordCards;

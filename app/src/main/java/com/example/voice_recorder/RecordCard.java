@@ -1,28 +1,24 @@
 package com.example.voice_recorder;
 
+import android.view.View;
+import android.widget.TextView;
+import android.widget.ImageView;
+import android.os.CountDownTimer;
+import android.widget.ProgressBar;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.os.CountDownTimer;
-import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-
 import androidx.core.content.res.ResourcesCompat;
 
-import com.example.voice_recorder.AudioRecord;
-import com.example.voice_recorder.R;
-
 public class RecordCard {
-    private String name;
-    final String duration;
-    final AudioRecord audioRecord;
-    final Drawable playing, paused;
-    private CountDownTimer timer;
-    private ImageView playButton;
+
     private TextView durationTextView;
     private ProgressBar progressBar;
+    final Drawable playing, paused;
+    final AudioRecord audioRecord;
+    private ImageView playButton;
+    private CountDownTimer timer;
+    final String duration;
+    private String name;
 
     public RecordCard(Resources res, String filePath){
         name = "Без названия";
@@ -36,12 +32,39 @@ public class RecordCard {
         return name;
     }
 
-    public void setName(String name){
-        this.name = name;
-    }
-
     public String getDate(){
         return audioRecord.getDate();
+    }
+
+    public String getDuration(){
+        return duration;
+    }
+
+    public void setDurationTextView(TextView textView){
+        durationTextView = textView;
+    }
+
+    public void setPlayButton(ImageView playButton){
+        this.playButton = playButton;
+        this.playButton.setOnClickListener(view -> {
+            if(!audioRecord.isPlaying){
+                playButton.setImageDrawable(paused);
+                audioRecord.isPlaying = true;
+                audioRecord.play();
+                addTimer();
+            }
+            else{
+                playButton.setImageDrawable(playing);
+                audioRecord.isPlaying = false;
+                deleteTimer();
+                audioRecord.stop();
+            }
+        });
+    }
+
+    public void setProgressBar(ProgressBar progressBar){
+        this.progressBar = progressBar;
+        this.progressBar.setMax(audioRecord.getDuration());
     }
 
     private String getAudioDuration(int recordDuration){
@@ -57,40 +80,6 @@ public class RecordCard {
         else duration += Integer.toString(0);
 
         return duration;
-    }
-
-    public String getDuration(){
-        return duration;
-    }
-
-    public void setDurationTextView(TextView textView){
-        durationTextView = textView;
-    }
-
-    public void setPlayButton(ImageView playButton){
-        this.playButton = playButton;
-        this.playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!audioRecord.isPlaying){
-                    playButton.setImageDrawable(paused);
-                    audioRecord.isPlaying = true;
-                    audioRecord.play();
-                    addTimer();
-                }
-                else{
-                    playButton.setImageDrawable(playing);
-                    audioRecord.isPlaying = false;
-                    deleteTimer();
-                    audioRecord.stop();
-                }
-            }
-        });
-    }
-
-    public void setProgressBar(ProgressBar progressBar){
-        this.progressBar = progressBar;
-        this.progressBar.setMax(audioRecord.getDuration());
     }
 
     private void addTimer(){
@@ -119,5 +108,6 @@ public class RecordCard {
         timer.cancel();
         timer = null;
     }
+
 
 }

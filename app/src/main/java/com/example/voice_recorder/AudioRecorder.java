@@ -1,38 +1,33 @@
 package com.example.voice_recorder;
 
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
-import android.media.MediaRecorder;
+import java.io.File;
+import java.util.List;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-
+import android.media.MediaRecorder;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import androidx.core.content.res.ResourcesCompat;
-
 import com.example.voice_recorder.adapters.RecyclerAdapter;
-
-import java.io.File;
-import java.util.List;
 
 public class AudioRecorder {
 
-    private ImageView recordButton;
-    private MediaRecorder recorder;
-    private String directoryPath, lastFilePath;
     final Drawable microphone, recording;
+    private MediaRecorder recorder;
+    private String lastFilePath;
     private boolean isRecording;
+    final String directoryPath;
+    final Resources res;
     int count;
-    private Resources res;
 
     public AudioRecorder(Resources res, String directoryPath, List<RecordCard> recordCards){
         this.res = res;
+        this.directoryPath = directoryPath;
         count = recordCards.size();
         isRecording = false;
-
         microphone = ResourcesCompat.getDrawable(res, R.drawable.microphone, null);
         recording = ResourcesCompat.getDrawable(res, R.drawable.recording, null);
-
-        this.directoryPath = directoryPath;
     }
 
     public void startRecording(){
@@ -58,29 +53,19 @@ public class AudioRecorder {
         }
     }
 
-    private String createFilePath(){
-        count++;
-        File file = new File(directoryPath, "record" + (count) + ".mp3");
-        return file.getPath();
-    }
-
     public void setRecordButton(ImageView recordButton, List<RecordCard> recordCards, RecyclerAdapter adapter){
-        this.recordButton = recordButton;
-        this.recordButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(!isRecording){
-                    recordButton.setImageDrawable(recording);
-                    isRecording = true;
-                    startRecording();
-                }
-                else{
-                    recordButton.setImageDrawable(microphone);
-                    isRecording = false;
-                    stopRecording();
-                    recordCards.add(new RecordCard(res, lastFilePath));
-                    adapter.notifyDataSetChanged();
-                }
+        recordButton.setOnClickListener(view -> {
+            if(!isRecording){
+                recordButton.setImageDrawable(recording);
+                isRecording = true;
+                startRecording();
+            }
+            else{
+                recordButton.setImageDrawable(microphone);
+                isRecording = false;
+                stopRecording();
+                recordCards.add(new RecordCard(res, lastFilePath));
+                adapter.notifyDataSetChanged();
             }
         });
     }
@@ -95,5 +80,11 @@ public class AudioRecorder {
         else {
             Log.d("Files", "No"); //Debug
         }
+    }
+
+    private String createFilePath(){
+        count++;
+        File file = new File(directoryPath, "record" + (count) + ".mp3");
+        return file.getPath();
     }
 }

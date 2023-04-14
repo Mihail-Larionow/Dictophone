@@ -1,16 +1,17 @@
 package com.michel.dictophone
 
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.media.MediaRecorder
 import android.util.Log
-import android.view.View
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
 import com.michel.dictophone.adapters.RecyclerAdapter
 import java.io.File
 
 class Recorder(private var res: Resources?, private var directoryPath: String?){
+
     private val microphone: Drawable? = ResourcesCompat.getDrawable(res!!, R.drawable.microphone, null)
     private val recording: Drawable? = ResourcesCompat.getDrawable(res!!, R.drawable.recording, null)
     private var recorder: MediaRecorder? = null
@@ -18,7 +19,8 @@ class Recorder(private var res: Resources?, private var directoryPath: String?){
     private var isRecording = false
     private var count = 0
 
-    fun startRecording() {
+    //Starts recording audio
+    private fun startRecording() {
         try {
             lastFilePath = createFilePath()
             recorder = MediaRecorder()
@@ -33,7 +35,8 @@ class Recorder(private var res: Resources?, private var directoryPath: String?){
         }
     }
 
-    fun stopRecording() {
+    //Stops recording audio
+    private fun stopRecording() {
         try {
             recorder!!.stop()
         } catch (e: Exception) {
@@ -41,6 +44,8 @@ class Recorder(private var res: Resources?, private var directoryPath: String?){
         }
     }
 
+    //Sets record button on layout
+    @SuppressLint("NotifyDataSetChanged")
     fun setRecordButton(
         recordButton: ImageView,
         recordCards: MutableList<RecordCard?>,
@@ -61,6 +66,7 @@ class Recorder(private var res: Resources?, private var directoryPath: String?){
         }
     }
 
+    //Loads data
     fun loadData(files: Array<File>?, recordCards: MutableList<RecordCard?>) {
         recordCards.clear()
         if (files != null) for (file in files) {
@@ -69,9 +75,11 @@ class Recorder(private var res: Resources?, private var directoryPath: String?){
         count = recordCards.size
     }
 
+    //Returns a correct file path of the record
     private fun createFilePath(): String? {
         count++
         val file = File(directoryPath, "record$count.mp3")
         return file.path
     }
+
 }

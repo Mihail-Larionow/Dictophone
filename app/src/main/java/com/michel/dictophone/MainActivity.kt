@@ -17,18 +17,17 @@ import java.io.File
 class MainActivity : AppCompatActivity() {
 
     private val microphonePermission = 100
-    private val writePermission = 200
     private val readPermission = 300
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         if (hasMicrophone() && allPermissionsGranted()) {
             init()
         }
     }
 
+    //Initialization
     private fun init() {
         val recordCards: MutableList<RecordCard?> = ArrayList()
         val directory = getDirectory()
@@ -69,21 +68,6 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    //Get write external storage permission
-    private fun getWritePermission(): Boolean {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            == PackageManager.PERMISSION_DENIED
-        ) {
-            ActivityCompat.requestPermissions(
-                this, arrayOf(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ), writePermission
-            )
-            return false
-        }
-        return true
-    }
-
     //Get read external storage permission
     private fun getReadPermission(): Boolean {
         return if (ContextCompat.checkSelfPermission(
@@ -94,15 +78,16 @@ class MainActivity : AppCompatActivity() {
         ) {
             ActivityCompat.requestPermissions(
                 this, arrayOf(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    Manifest.permission.READ_EXTERNAL_STORAGE
                 ), readPermission
             )
             false
         } else true
     }
 
+    //Check all permissions granted
     private fun allPermissionsGranted(): Boolean {
         if (!getRecordPermission()) return false
-        return if (!getWritePermission()) false else getReadPermission()
+        return getReadPermission()
     }
 }

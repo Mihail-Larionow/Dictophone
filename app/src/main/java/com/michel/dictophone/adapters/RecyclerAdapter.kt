@@ -22,20 +22,23 @@ class RecyclerAdapter (private val recordCards: List<RecordCard?>): RecyclerView
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.setData(recordCards!![position]!!)
+        holder.setData(recordCards[position]!!)
     }
 
+    //Returns item count in RecyclerView
     override fun getItemCount(): Int {
-        return recordCards!!.size
+        return recordCards.size
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val nameText: TextView
-        val dateText: TextView
-        val durationText: TextView
-        val playButton: ImageView
-        val durationBar: ProgressBar
 
+        private val nameText: TextView
+        private val dateText: TextView
+        private val durationText: TextView
+        private val playButton: ImageView
+        private val durationBar: ProgressBar
+
+        //Initialization
         init {
             nameText = view.findViewById<View>(R.id.nameText) as TextView
             dateText = view.findViewById<View>(R.id.dateText) as TextView
@@ -44,6 +47,7 @@ class RecyclerAdapter (private val recordCards: List<RecordCard?>): RecyclerView
             durationBar = view.findViewById<View>(R.id.durationBar) as ProgressBar
         }
 
+        //Sets data
         fun setData(recordCard: RecordCard) {
             nameText.text = recordCard.getName()
             dateText.text = recordCard.getDate()

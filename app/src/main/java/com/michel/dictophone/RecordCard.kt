@@ -3,13 +3,13 @@ package com.michel.dictophone
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.CountDownTimer
-import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 
-class RecordCard (private var res: Resources?, private var filePath: String?){
+class RecordCard (res: Resources?, filePath: String?){
+
     private var durationTextView: TextView? = null
     private var progressBar: ProgressBar? = null
     var playing: Drawable? = ResourcesCompat.getDrawable(res!!, R.drawable.playing, null)
@@ -20,25 +20,30 @@ class RecordCard (private var res: Resources?, private var filePath: String?){
     var duration: String? = getAudioDuration(record!!.getDuration().toInt())
     private var name: String? = "Без названия"
 
+    //Returns name of the record
     fun getName(): String? {
         return name
     }
 
-    fun getDate(): String? {
+    //Returns name of the record
+    fun getDate(): String {
         return record!!.getDate()
     }
 
+    //Returns duration of the record
     fun getRecordDuration(): String? {
         return duration
     }
 
+    //Sets a text view on card
     fun setDurationTextView(textView: TextView?) {
         durationTextView = textView
     }
 
+    //Sets a play button on card
     fun setPlayButton(playButton: ImageView) {
         this.playButton = playButton
-        this.playButton!!.setOnClickListener { view: View? ->
+        this.playButton!!.setOnClickListener {
             if (!record!!.getState()) {
                 playButton.setImageDrawable(paused)
                 record!!.setState(true)
@@ -53,11 +58,13 @@ class RecordCard (private var res: Resources?, private var filePath: String?){
         }
     }
 
+    //Sets a progress bar on card
     fun setProgressBar(progressBar: ProgressBar?) {
         this.progressBar = progressBar
         this.progressBar!!.max = record!!.getDuration().toInt()
     }
 
+    //Returns the record duration in String
     private fun getAudioDuration(recordDuration: Int): String {
         val seconds = recordDuration / 1000 % 60
         val minutes = recordDuration / 60000 % 60
@@ -69,6 +76,7 @@ class RecordCard (private var res: Resources?, private var filePath: String?){
         return duration
     }
 
+    //Adds timer of record playing
     private fun addTimer() {
         timer = object : CountDownTimer(record!!.getDuration(), 500) {
             override fun onTick(l: Long) {

@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    //Get directory with files
+    //Returns directory with files
     private fun getDirectory(): File? {
         val contextWrapper = ContextWrapper(applicationContext)
         return contextWrapper.getExternalFilesDir(Environment.DIRECTORY_MUSIC)
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
         return this.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)
     }
 
-    //Get record audio permission
+    //Returns if it has record audio permission
     private fun getRecordPermission(): Boolean {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
             == PackageManager.PERMISSION_DENIED
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    //Get read external storage permission
+    //Returns if it has read external storage permission
     private fun getReadPermission(): Boolean {
         return if (ContextCompat.checkSelfPermission(
                 this,
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         } else true
     }
 
-    //Check all permissions granted
+    //Checks all permissions granted
     private fun allPermissionsGranted(): Boolean {
         if (!getRecordPermission()) return false
         return getReadPermission()

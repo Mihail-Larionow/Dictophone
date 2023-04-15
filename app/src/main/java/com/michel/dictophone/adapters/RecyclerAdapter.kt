@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.michel.dictophone.R
 import com.michel.dictophone.RecordCard
 
-class RecyclerAdapter (private val recordCards: List<RecordCard?>): RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
+class RecyclerAdapter (private val recordCards: List<RecordCard>): RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,13 +22,11 @@ class RecyclerAdapter (private val recordCards: List<RecordCard?>): RecyclerView
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.setData(recordCards[position]!!)
+        holder.setData(recordCards[position], recordCards)
     }
 
     //Returns item count in RecyclerView
-    override fun getItemCount(): Int {
-        return recordCards.size
-    }
+    override fun getItemCount() = recordCards.size
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -48,14 +46,15 @@ class RecyclerAdapter (private val recordCards: List<RecordCard?>): RecyclerView
         }
 
         //Sets data
-        fun setData(recordCard: RecordCard) {
+        fun setData(recordCard: RecordCard, otherCards: List<RecordCard>) {
             nameText.text = recordCard.getName()
             dateText.text = recordCard.getDate()
             durationText.text = recordCard.getRecordDuration()
-            recordCard.setPlayButton(playButton)
+            recordCard.setPlayButton(playButton, otherCards)
             recordCard.setDurationTextView(durationText)
             recordCard.setProgressBar(durationBar)
         }
+
     }
 
 }

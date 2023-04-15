@@ -3,37 +3,34 @@ package com.michel.dictophone
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.CountDownTimer
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
+import java.io.File
 
-class RecordCard (res: Resources?, filePath: String?){
+class RecordCard (res: Resources, var filePath: String){
 
     private var durationTextView: TextView? = null
     private var progressBar: ProgressBar? = null
-    var playing: Drawable? = ResourcesCompat.getDrawable(res!!, R.drawable.playing, null)
-    var paused: Drawable? = ResourcesCompat.getDrawable(res!!, R.drawable.paused, null)
-    var record: Record? = Record(filePath!!)
+    var playing: Drawable? = ResourcesCompat.getDrawable(res, R.drawable.playing, null)
+    var paused: Drawable? = ResourcesCompat.getDrawable(res, R.drawable.paused, null)
+    var record: Record = Record(filePath)
     private var playButton: ImageView? = null
     private var timer: CountDownTimer? = null
-    var duration: String? = getAudioDuration(record!!.getDuration().toInt())
-    private var name: String? = "Без названия"
+    private var name: String = "Без названия"
+    private val utils = Utils()
+    private var isPlaying: Boolean = false
 
     //Returns name of the record
-    fun getName(): String? {
-        return name
-    }
+    fun getName() = name
 
     //Returns name of the record
-    fun getDate(): String {
-        return record!!.getDate()
-    }
+    fun getDate() = utils.getDate(File(filePath))
 
     //Returns duration of the record
-    fun getRecordDuration(): String? {
-        return duration
-    }
+    fun getRecordDuration() = utils.getAudioDuration(record.getDuration())
 
     //Sets a text view on card
     fun setDurationTextView(textView: TextView?) {
@@ -41,19 +38,22 @@ class RecordCard (res: Resources?, filePath: String?){
     }
 
     //Sets a play button on card
-    fun setPlayButton(playButton: ImageView) {
+    fun setPlayButton(playButton: ImageView, otherCards: List<RecordCard>) {
         this.playButton = playButton
+        utils.setClickAnimation(playButton)
         this.playButton!!.setOnClickListener {
-            if (!record!!.getState()) {
-                playButton.setImageDrawable(paused)
-                record!!.setState(true)
-                record!!.play()
-                addTimer()
+            if (!isPlaying) {
+                if(!utils.checkPlayingRecords(otherCards)) {
+                    playButton.setImageDrawable(paused)
+                    isPlaying = true
+                    record.play()
+                    addTimer()
+                }
             } else {
                 playButton.setImageDrawable(playing)
-                record!!.setState(false)
+                isPlaying = false
                 deleteTimer()
-                record!!.stop()
+                record.stop()
             }
         }
     }
@@ -61,34 +61,24 @@ class RecordCard (res: Resources?, filePath: String?){
     //Sets a progress bar on card
     fun setProgressBar(progressBar: ProgressBar?) {
         this.progressBar = progressBar
-        this.progressBar!!.max = record!!.getDuration().toInt()
-    }
-
-    //Returns the record duration in String
-    private fun getAudioDuration(recordDuration: Int): String {
-        val seconds = recordDuration / 1000 % 60
-        val minutes = recordDuration / 60000 % 60
-        val hours = recordDuration / 3600000
-        var duration = ""
-        if (hours > 0) duration += "$hours:"
-        duration += if (minutes > 0) "$minutes:" else 0.toString() + ":"
-        duration += if (seconds > 0) seconds.toString() else 0.toString()
-        return duration
+        this.progressBar!!.max = record.getDuration().toInt()
     }
 
     //Adds timer of record playing
     private fun addTimer() {
-        timer = object : CountDownTimer(record!!.getDuration(), 500) {
+        timer = object : CountDownTimer(record.getDuration(), 500) {
             override fun onTick(l: Long) {
-                val currentDuration: Int = record!!.getCurrentDuration()
-                durationTextView!!.text = (getAudioDuration(currentDuration) + " / " + duration)
-                progressBar!!.progress = currentDuration
+                val text: String
+                val currentDuration: Long = record.getCurrentDuration()
+                text = utils.getAudioDuration(currentDuration) + " / " + getRecordDuration()
+                durationTextView!!.text = text
+                progressBar!!.progress = currentDuration.toInt()
             }
 
             override fun onFinish() {
                 playButton!!.setImageDrawable(playing)
-                record!!.setState(false)
-                durationTextView!!.text = duration
+                isPlaying = false
+                durationTextView!!.text = getRecordDuration()
                 progressBar!!.progress = 0
             }
         }
@@ -99,5 +89,8 @@ class RecordCard (res: Resources?, filePath: String?){
         timer!!.cancel()
         timer = null
     }
+
+    //Returns state of the record
+    fun getState() = isPlaying
 
 }

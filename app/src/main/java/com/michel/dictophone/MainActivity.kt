@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.os.Environment
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         if (hasMicrophone() && allPermissionsGranted()) {
             init()
         }
@@ -29,16 +32,17 @@ class MainActivity : AppCompatActivity() {
 
     //Initialization
     private fun init() {
-        val recordCards: MutableList<RecordCard?> = ArrayList()
+        val recordCards: MutableList<RecordCard> = ArrayList()
         val directory = getDirectory()
         val files = directory!!.listFiles()
         val recordButton = findViewById<View>(R.id.recordButton) as ImageView
+        val durationTextView = findViewById<View>(R.id.durationText) as TextView
         val recycler = findViewById<View>(R.id.recyclerView) as RecyclerView
         val recorder = Recorder(resources, directory.path)
         recorder.loadData(files, recordCards)
         val adapter = RecyclerAdapter(recordCards)
         recycler.adapter = adapter
-        recorder.setRecordButton(recordButton, recordCards, adapter)
+        recorder.setRecordButton(recordButton, durationTextView, recordCards, adapter)
     }
 
 

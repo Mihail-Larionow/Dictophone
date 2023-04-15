@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Dictophone</string>
+    <string name="your_notes">Ваши записи</string>
+    <string name="microphone_description">microphone</string>
 </resources>

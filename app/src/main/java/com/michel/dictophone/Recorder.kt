@@ -6,7 +6,8 @@ import android.graphics.drawable.Drawable
 import android.media.MediaRecorder
 import android.os.CountDownTimer
 import android.util.Log
-import android.widget.AutoCompleteTextView
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
@@ -55,14 +56,17 @@ class Recorder(private var res: Resources, private var directoryPath: String){
         durationTextView: TextView,
         recordCards: MutableList<RecordCard>,
         adapter: RecyclerAdapter) {
-        utils.setClickAnimation(recordButton)
+        val scaleDownUpAnimation = AnimationUtils.loadAnimation(recordButton.context, R.anim.scale_down_up)
         recordButton.setOnClickListener {
             if (!isRecording) {
+                utils.stopPlayingRecords(recordCards)
                 recordButton.setImageDrawable(recording)
+                recordButton.startAnimation(scaleDownUpAnimation)
                 startRecording()
                 addTimer(durationTextView)
             } else {
                 recordButton.setImageDrawable(microphone)
+                recordButton.startAnimation(scaleDownUpAnimation)
                 stopRecording()
                 recordCards.add(0, RecordCard(res, lastFilePath!!))
                 adapter.notifyDataSetChanged()
@@ -79,6 +83,8 @@ class Recorder(private var res: Resources, private var directoryPath: String){
         }
         count = recordCards.size
     }
+
+    fun getState(): Boolean = isRecording
 
     //Returns a correct file path of the record
     private fun createFilePath(): String? {

@@ -3,7 +3,6 @@ package com.michel.dictophone
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.CountDownTimer
-import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -23,11 +22,24 @@ class RecordCard (res: Resources, var filePath: String){
     private val utils = Utils()
     private var isPlaying: Boolean = false
 
+    //Stops playing the record
+    fun stopPlayingRecord(){
+        isPlaying = false
+        playButton!!.setImageDrawable(playing)
+        durationTextView!!.text = getRecordDuration()
+        progressBar!!.progress = 0
+        deleteTimer()
+        record.stop()
+    }
+
     //Returns name of the record
     fun getName() = name
 
     //Returns name of the record
     fun getDate() = utils.getDate(File(filePath))
+
+    //Returns state of the record
+    fun getState() = isPlaying
 
     //Returns duration of the record
     fun getRecordDuration() = utils.getAudioDuration(record.getDuration())
@@ -38,28 +50,23 @@ class RecordCard (res: Resources, var filePath: String){
     }
 
     //Sets a play button on card
-    fun setPlayButton(playButton: ImageView, otherCards: List<RecordCard>) {
+    fun setPlayButton(playButton: ImageView, otherCards: List<RecordCard>, recorder: Recorder) {
         this.playButton = playButton
-        utils.setClickAnimation(playButton)
         this.playButton!!.setOnClickListener {
-            if (!isPlaying) {
-                if(!utils.checkPlayingRecords(otherCards)) {
-                    playButton.setImageDrawable(paused)
-                    isPlaying = true
-                    record.play()
-                    addTimer()
-                }
-            } else {
-                playButton.setImageDrawable(playing)
-                isPlaying = false
-                deleteTimer()
-                record.stop()
+            if (!isPlaying && !recorder.getState()) {
+                utils.stopPlayingRecords(otherCards)
+                playButton.setImageDrawable(paused)
+                isPlaying = true
+                record.play()
+                addTimer()
+            } else if (isPlaying) {
+                stopPlayingRecord()
             }
         }
     }
 
     //Sets a progress bar on card
-    fun setProgressBar(progressBar: ProgressBar?) {
+    fun setProgressBar(progressBar: ProgressBar) {
         this.progressBar = progressBar
         this.progressBar!!.max = record.getDuration().toInt()
     }
@@ -85,12 +92,10 @@ class RecordCard (res: Resources, var filePath: String){
         (timer as CountDownTimer).start()
     }
 
+    //Deletes the timer
     private fun deleteTimer() {
         timer!!.cancel()
         timer = null
     }
-
-    //Returns state of the record
-    fun getState() = isPlaying
 
 }

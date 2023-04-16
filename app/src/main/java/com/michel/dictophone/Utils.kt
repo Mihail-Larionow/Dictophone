@@ -34,28 +34,11 @@ class Utils {
         return SimpleDateFormat("dd.MM HH:mm").format(date)
     }
 
-    //Checks if any record is playing at the time
-    fun checkPlayingRecords(cards: List<RecordCard>): Boolean{
+    //Stops playing record cards
+    fun stopPlayingRecords(cards: List<RecordCard>){
         for(card: RecordCard in cards){
-            if(card.getState()) return true
+            if(card.getState()) card.stopPlayingRecord()
         }
-        return false
-    }
-
-    //Sets click animation
-    fun setClickAnimation(view: View){
-        val scaleUpAnimation = AnimationUtils.loadAnimation(view.context, R.anim.scale_up)
-        val scaleDownAnimation = AnimationUtils.loadAnimation(view.context, R.anim.scale_down)
-        view.setOnTouchListener(object : View.OnTouchListener {
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                when (event?.action) {
-                    MotionEvent.ACTION_DOWN -> view.startAnimation(scaleUpAnimation)
-                    MotionEvent.ACTION_UP -> view.startAnimation(scaleDownAnimation)
-                }
-
-                return v?.onTouchEvent(event) ?: true
-            }
-        })
     }
 
 }

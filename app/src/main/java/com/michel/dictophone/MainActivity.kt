@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
         val recycler = findViewById<View>(R.id.recyclerView) as RecyclerView
         val recorder = Recorder(resources, directory.path)
         recorder.loadData(files, recordCards)
-        val adapter = RecyclerAdapter(recordCards)
+        val adapter = RecyclerAdapter(recordCards, recorder)
         recycler.adapter = adapter
         recorder.setRecordButton(recordButton, durationTextView, recordCards, adapter)
     }

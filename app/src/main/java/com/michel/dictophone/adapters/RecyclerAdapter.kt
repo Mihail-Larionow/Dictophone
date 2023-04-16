@@ -9,8 +9,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.michel.dictophone.R
 import com.michel.dictophone.RecordCard
+import com.michel.dictophone.Recorder
 
-class RecyclerAdapter (private val recordCards: List<RecordCard>): RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
+class RecyclerAdapter (private val recordCards: MutableList<RecordCard>, private val recorder: Recorder): RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,7 +23,7 @@ class RecyclerAdapter (private val recordCards: List<RecordCard>): RecyclerView.
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.setData(recordCards[position], recordCards)
+        holder.setData(recordCards[position], recordCards, recorder)
     }
 
     //Returns item count in RecyclerView
@@ -46,11 +47,11 @@ class RecyclerAdapter (private val recordCards: List<RecordCard>): RecyclerView.
         }
 
         //Sets data
-        fun setData(recordCard: RecordCard, otherCards: List<RecordCard>) {
+        fun setData(recordCard: RecordCard, otherCards: MutableList<RecordCard>, recorder: Recorder) {
             nameText.text = recordCard.getName()
             dateText.text = recordCard.getDate()
             durationText.text = recordCard.getRecordDuration()
-            recordCard.setPlayButton(playButton, otherCards)
+            recordCard.setPlayButton(playButton, otherCards, recorder)
             recordCard.setDurationTextView(durationText)
             recordCard.setProgressBar(durationBar)
         }

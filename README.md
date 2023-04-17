@@ -1,4 +1,4 @@
-# Voice Recorder
+# Dictophone
 _Приложение для создания аудио-заметок._
 
 <img src="https://github.com/Mihail-Larionow/Dictophone/blob/master/images/audio_recorder.png" alt="drawing" height="490" width="225"/>

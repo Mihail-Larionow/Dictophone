@@ -1,16 +1,26 @@
 package com.michel.dictophone
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.AnimationUtils
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
 class Utils {
 
+    private val microphonePermission = 100
+    private val readPermission = 300
     private val day = 86400000
+
     //Returns the record duration in String
     fun getAudioDuration(recordDuration: Long): String {
         val seconds = recordDuration / 1000 % 60
@@ -39,6 +49,46 @@ class Utils {
         for(card: RecordCard in cards){
             if(card.getState()) card.stopPlayingRecord()
         }
+    }
+
+    //Check microphone is unable
+    fun hasMicrophone(activity: MainActivity): Boolean {
+        return activity.packageManager.hasSystemFeature(PackageManager.FEATURE_MICROPHONE)
+    }
+
+    //Returns if it has read external storage permission
+    fun readPermissionGranted(activity: MainActivity): Boolean {
+        return if (ContextCompat.checkSelfPermission(
+                activity.applicationContext,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+            == PackageManager.PERMISSION_DENIED
+        ) {
+            ActivityCompat.requestPermissions(
+                activity, arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ), readPermission
+            )
+            false
+        } else true
+    }
+
+    //Returns if it has record audio permission
+    fun recordPermissionGranted(activity: MainActivity): Boolean {
+        if (ContextCompat.checkSelfPermission(
+                activity.applicationContext,
+                Manifest.permission.RECORD_AUDIO
+            )
+            == PackageManager.PERMISSION_DENIED
+        ) {
+            ActivityCompat.requestPermissions(
+                activity, arrayOf(
+                    Manifest.permission.RECORD_AUDIO
+                ), microphonePermission
+            )
+            return false
+        }
+        return true
     }
 
 }

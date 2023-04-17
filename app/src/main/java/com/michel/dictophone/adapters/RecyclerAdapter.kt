@@ -7,11 +7,16 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.michel.dictophone.MainActivity
 import com.michel.dictophone.R
 import com.michel.dictophone.RecordCard
 import com.michel.dictophone.Recorder
 
-class RecyclerAdapter (private val recordCards: MutableList<RecordCard>, private val recorder: Recorder): RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
+class RecyclerAdapter (
+    private val recordCards: MutableList<RecordCard>,
+    private val recorder: Recorder,
+    private val activity: MainActivity
+    ): RecyclerView.Adapter<RecyclerAdapter.ViewHolder>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,7 +28,7 @@ class RecyclerAdapter (private val recordCards: MutableList<RecordCard>, private
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.setData(recordCards[position], recordCards, recorder)
+        holder.setData(recordCards[position], recordCards, recorder, activity)
     }
 
     //Returns item count in RecyclerView
@@ -47,11 +52,16 @@ class RecyclerAdapter (private val recordCards: MutableList<RecordCard>, private
         }
 
         //Sets data
-        fun setData(recordCard: RecordCard, otherCards: MutableList<RecordCard>, recorder: Recorder) {
+        fun setData(
+            recordCard: RecordCard,
+            otherCards: MutableList<RecordCard>,
+            recorder: Recorder,
+            activity: MainActivity
+        ) {
             nameText.text = recordCard.getName()
             dateText.text = recordCard.getDate()
             durationText.text = recordCard.getRecordDuration()
-            recordCard.setPlayButton(playButton, otherCards, recorder)
+            recordCard.setPlayButton(playButton, otherCards, recorder, activity)
             recordCard.setDurationTextView(durationText)
             recordCard.setProgressBar(durationBar)
         }

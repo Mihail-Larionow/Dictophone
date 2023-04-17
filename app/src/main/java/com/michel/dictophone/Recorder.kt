@@ -55,22 +55,29 @@ class Recorder(private var res: Resources, private var directoryPath: String){
         recordButton: ImageView,
         durationTextView: TextView,
         recordCards: MutableList<RecordCard>,
-        adapter: RecyclerAdapter) {
+        adapter: RecyclerAdapter,
+        activity: MainActivity
+    ) {
         val scaleDownUpAnimation = AnimationUtils.loadAnimation(recordButton.context, R.anim.scale_down_up)
         recordButton.setOnClickListener {
-            if (!isRecording) {
-                utils.stopPlayingRecords(recordCards)
-                recordButton.setImageDrawable(recording)
-                recordButton.startAnimation(scaleDownUpAnimation)
-                startRecording()
-                addTimer(durationTextView)
-            } else {
-                recordButton.setImageDrawable(microphone)
-                recordButton.startAnimation(scaleDownUpAnimation)
-                stopRecording()
-                recordCards.add(0, RecordCard(res, lastFilePath!!))
-                adapter.notifyDataSetChanged()
-                deleteTimer(durationTextView)
+            if (utils.hasMicrophone(activity) &&
+                utils.recordPermissionGranted(activity) &&
+                utils.readPermissionGranted(activity)
+            ) {
+                if (!isRecording) {
+                    utils.stopPlayingRecords(recordCards)
+                    recordButton.setImageDrawable(recording)
+                    recordButton.startAnimation(scaleDownUpAnimation)
+                    startRecording()
+                    addTimer(durationTextView)
+                } else {
+                    recordButton.setImageDrawable(microphone)
+                    recordButton.startAnimation(scaleDownUpAnimation)
+                    stopRecording()
+                    recordCards.add(0, RecordCard(res, lastFilePath!!))
+                    adapter.notifyDataSetChanged()
+                    deleteTimer(durationTextView)
+                }
             }
         }
     }

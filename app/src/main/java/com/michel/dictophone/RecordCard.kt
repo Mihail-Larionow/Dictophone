@@ -50,7 +50,12 @@ class RecordCard (res: Resources, var filePath: String){
     }
 
     //Sets a play button on card
-    fun setPlayButton(playButton: ImageView, otherCards: List<RecordCard>, recorder: Recorder) {
+    fun setPlayButton(
+        playButton: ImageView,
+        otherCards: List<RecordCard>,
+        recorder: Recorder,
+        activity: MainActivity
+    ) {
         this.playButton = playButton
         this.playButton!!.setOnClickListener {
             if (!isPlaying && !recorder.getState()) {

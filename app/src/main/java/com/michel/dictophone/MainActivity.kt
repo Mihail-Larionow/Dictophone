@@ -38,7 +38,6 @@ class MainActivity : AppCompatActivity() {
 
     //Initialization
     private fun init() {
-
         val directory = getDirectory()
         val files = directory!!.listFiles()
         val recordButton = findViewById<View>(R.id.recordButton) as ImageView

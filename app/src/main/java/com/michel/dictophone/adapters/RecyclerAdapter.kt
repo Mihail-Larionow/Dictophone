@@ -61,9 +61,10 @@ class RecyclerAdapter (
             nameText.text = recordCard.getName()
             dateText.text = recordCard.getDate()
             durationText.text = recordCard.getRecordDuration()
-            recordCard.setPlayButton(playButton, otherCards, recorder, activity)
+            recordCard.setPlayButton(playButton, otherCards, recorder)
             recordCard.setDurationTextView(durationText)
             recordCard.setProgressBar(durationBar)
+            recordCard.setRecordName(nameText, activity)
         }
 
     }

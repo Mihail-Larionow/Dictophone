@@ -1,10 +1,10 @@
 # Dictophone
-_Приложение для создания аудио-заметок._
+_Application for creating audio notes._
 
 <img src="https://github.com/Mihail-Larionow/Dictophone/blob/master/images/dictophone_logo_without_border.png" alt="drawing"/>
 
-Создание записей осуществляется посредством нажатия кнопки record внизу экрана. Повторное же нажатие заканчивает запись файла.
-Каждую из созданных записей можно прослушать, нажав на кнопку play.
+You create records by pressing the record button at the bottom of the screen. Pressing it again ends the recording of the file.  
+You can listen to each of the created recordings by pressing the play button.
 
 ## Installation
-Чтобы установить данное приложение, необходимо скачать установочный файл DICTOPHONE.apk.
+To run this application on android, you need to download the installation file DICTOPHONE.apk.

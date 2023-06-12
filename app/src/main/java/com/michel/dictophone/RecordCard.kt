@@ -22,6 +22,12 @@ class RecordCard (res: Resources, var filePath: String){
     private val utils = Utils()
     private var isPlaying: Boolean = false
 
+    //Deletes the record
+    fun deleteRecord(){
+        if(isPlaying) stopPlayingRecord()
+        record.delete()
+    }
+
     //Stops playing the record
     fun stopPlayingRecord(){
         isPlaying = false

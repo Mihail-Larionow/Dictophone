@@ -3,6 +3,7 @@ package com.michel.dictophone
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.util.Log
+import java.io.File
 
 class Record(private var filePath: String){
 
@@ -35,4 +36,7 @@ class Record(private var filePath: String){
     //Returns current duration of the record
     fun getCurrentDuration() = mediaPlayer.currentPosition.toLong()
 
+    fun delete(){
+        File(filePath).delete()
+    }
 }

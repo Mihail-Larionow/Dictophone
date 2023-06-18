@@ -1,5 +1,9 @@
 # Dictophone
-_Application for creating audio notes._
+<img src="https://img.shields.io/badge/stage-released-lime.svg" alt="stage">
+
+## About
+
+Dictophone is an pplication for creating audio notes.
 
 <img src="https://github.com/Mihail-Larionow/Dictophone/blob/master/images/dictophone_logo_without_border.png" alt="drawing"/>
 
